@@ -92,7 +92,6 @@ def generate_report(analysis: dict, article_title: str = "Analyzed Article", rep
 
     # --- Header ---
     story.append(Paragraph("VeritasAI", s["title"]))
-    story.append(Paragraph("Media Bias &amp; Manipulation Analysis Report", s["subtitle"]))
     story.append(Paragraph(clean(report_name), s["report_name"]))
     story.append(HRFlowable(width="100%", thickness=2, color=BLUE, spaceAfter=16))
     story.append(Paragraph(clean(article_title), s["bold"]))
