@@ -3,3 +3,6 @@ uvicorn
 groq
 requests
 python-dotenv
+newspaper3k
+lxml_html_clean
+reportlab
