@@ -1,4 +1,4 @@
-const API = "https://veritasai-frontend.onrender.com";
+const API = "https://story-arc-tracker-gnp3.onrender.com";
 
 // --- Tab Switching ---
 function switchTab(tab) {
