@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VeritasAI — Media Bias Detector</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>🔍 VeritasAI</h1>
+    <p>Detect manipulation, bias, and logical fallacies in news articles</p>
+  </header>
+
+  <main>
+
+    <!-- Input Section -->
+    <section class="input-section">
+      
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('paste')">Paste Article</button>
+    <button class="tab" onclick="switchTab('url')">From URL</button>
+    <button class="tab" onclick="switchTab('topic')">Search by Topic</button>
+    <button class="tab" onclick="switchTab('compare')">⚖️ Compare</button>
+  </div>
+
+
+
+      <!-- Paste Tab -->
+      <div id="paste-tab">
+        <textarea id="article-input" placeholder="Paste any news article text here..."></textarea>
+        <button class="analyze-btn" onclick="analyzeText()">Analyze Article</button>
+      </div>
+
+      <!-- URL Tab -->
+      <div id="url-tab" style="display:none;">
+        <input type="text" id="url-input" placeholder="Paste any news article URL e.g. https://economictimes.com/..." />
+        <button class="analyze-btn" onclick="analyzeURL()">Fetch & Analyze</button>
+      </div>
+
+      <!-- Topic Tab -->
+      <div id="topic-tab" style="display:none;">
+        <input type="text" id="topic-input" placeholder="e.g. Indian economy, Adani, RBI rates..." />
+        <button class="analyze-btn" onclick="searchTopic()">Search Articles</button>
+        <div id="article-list" style="display:none; margin-top:20px;"></div>
+      </div>
+    <!-- Compare Tab -->
+<div id="compare-tab" style="display:none;">
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+    <!-- Article A -->
+    <div>
+      <p style="color:#fff; font-size:0.9rem; margin-bottom:8px; font-weight:bold;">Article A</p>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <button class="toggle-btn active" id="toggle-a-text" onclick="toggleInput('a','text')">Text</button>
+        <button class="toggle-btn" id="toggle-a-url" onclick="toggleInput('a','url')">URL</button>
+      </div>
+      <textarea id="compare-a-text" placeholder="Paste Article A text here..."></textarea>
+      <input type="text" id="compare-a-url" placeholder="Or paste Article A URL..." style="display:none;"/>
+    </div>
+
+    <!-- Article B -->
+    <div>
+      <p style="color:#fff; font-size:0.9rem; margin-bottom:8px; font-weight:bold;">Article B</p>
+      <div style="display:flex; gap:8px; margin-bottom:8px;">
+        <button class="toggle-btn active" id="toggle-b-text" onclick="toggleInput('b','text')">Text</button>
+        <button class="toggle-btn" id="toggle-b-url" onclick="toggleInput('b','url')">URL</button>
+      </div>
+      <textarea id="compare-b-text" placeholder="Paste Article B text here..."></textarea>
+      <input type="text" id="compare-b-url" placeholder="Or paste Article B URL..." style="display:none;"/>
+    </div>
+
+  </div>
+
+  <button class="analyze-btn" style="margin-top:16px;" onclick="compareArticles()">⚖️ Compare Articles</button>
+</div>
+
+    </section>
+
+    <!-- Loading -->
+    <div id="loader" style="display:none;">
+      <div class="spinner"></div>
+      <p>Analyzing article...</p>
+    </div>
+
+    <!-- Results Section -->
+    <section id="results" style="display:none;">
+
+      <!-- Score Bar -->
+      <div class="score-card">
+        <h2>Manipulation Score</h2>
+        <div class="score-bar-container">
+          <div class="score-bar" id="score-bar"></div>
+        </div>
+        <p id="score-label"></p>
+      </div>
+
+      <!-- Political Leaning -->
+      <div class="card" id="leaning-card">
+        <h2>Political Leaning</h2>
+        <div id="leaning-content"></div>
+      </div>
+
+      <!-- Rhetorical Summary -->
+      <div class="card">
+        <h2>What This Article Is Doing</h2>
+        <p id="rhetorical-summary"></p>
+      </div>
+
+      <!-- Detected Patterns -->
+      <div class="card">
+        <h2>Detected Patterns</h2>
+        <div id="patterns-list"></div>
+      </div>
+
+      <!-- Fact Checks -->
+      <div class="card">
+        <h2>Factual Claims</h2>
+        <div id="claims-list"></div>
+      </div>
+
+      <!-- Clean Rewrite -->
+      <div class="card">
+        <h2>Clean Rewrite</h2>
+        <p id="clean-rewrite"></p>
+      </div>
+
+    </section>
+    <!-- Comparison Results -->
+<section id="compare-results" style="display:none;">
+
+  <!-- Verdict Banner -->
+  <div id="compare-verdict" class="verdict-banner"></div>
+
+  <!-- Side by Side -->
+  <div class="compare-grid">
+
+    <!-- Article A -->
+    <div class="compare-col" id="compare-col-a">
+      <h3 id="compare-title-a"></h3>
+      <div class="score-card" style="margin-top:12px;">
+        <h2>Manipulation Score</h2>
+        <div class="score-bar-container">
+          <div class="score-bar" id="score-bar-a"></div>
+        </div>
+        <p id="score-label-a"></p>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <h2>Political Leaning</h2>
+        <div id="leaning-content-a"></div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <h2>What This Article Is Doing</h2>
+        <p id="rhetorical-summary-a"></p>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <h2>Detected Patterns</h2>
+        <div id="patterns-list-a"></div>
+      </div>
+    </div>
+
+    <!-- Article B -->
+    <div class="compare-col" id="compare-col-b">
+      <h3 id="compare-title-b"></h3>
+      <div class="score-card" style="margin-top:12px;">
+        <h2>Manipulation Score</h2>
+        <div class="score-bar-container">
+          <div class="score-bar" id="score-bar-b"></div>
+        </div>
+        <p id="score-label-b"></p>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <h2>Political Leaning</h2>
+        <div id="leaning-content-b"></div>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <h2>What This Article Is Doing</h2>
+        <p id="rhetorical-summary-b"></p>
+      </div>
+      <div class="card" style="margin-top:12px;">
+        <h2>Detected Patterns</h2>
+        <div id="patterns-list-b"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
